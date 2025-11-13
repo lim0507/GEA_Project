@@ -6,96 +6,57 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 5f;
+    public float moveSpeed = 5f;
     public float jumpPower = 5f;
     public float gravity = -9.81f;
-    public CinemachineVirtualCamera virtualCam;
-    public float rotationSpeed = 10f;
-    private CinemachinePOV pov;
-    private CharacterController controller;
-    private Vector3 velocity;
+    public float mouseSensitivity = 3f;
+
+    float xRotation = 0f;
+    CharacterController controller;
+    Transform cam;
+    Vector3 velocity;
     public bool isGrounded;
 
-    public int maxHP = 100;
-    private int currentHP;
-
-    public Slider hpSlider;
+   
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         controller = GetComponent<CharacterController>();
-        pov = virtualCam.GetCinemachineComponent<CinemachinePOV>();
-
-        currentHP = maxHP;
-        hpSlider.value = 1f;
+        if(cam == null)
+        {
+            cam = GetComponentInChildren<Camera>()?.transform;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Tab))
-        {
-            pov.m_HorizontalAxis.Value = transform.eulerAngles.y;
-            pov.m_VerticalAxis.Value = 0f;
-        }
-
-        isGrounded = controller.isGrounded;
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            speed = 5f;
-            virtualCam.m_Lens.FieldOfView = 80f;
-        }
+        HandleMove();
+        HandleLook();
         
-        if(Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            speed = 5f;
-            virtualCam.m_Lens.FieldOfView = 60f;
-        }
-
+    }
+    void HandleMove()
+    {
+        isGrounded = controller.isGrounded;
         if (isGrounded && velocity.y < 0)
-        {
             velocity.y = -2f;
-        }
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-
-        Vector3 camForward = virtualCam.transform.forward;
-        camForward.y = 0;
-        camForward.Normalize();
-
-        Vector3 camRight = virtualCam.transform.right;
-        camRight.y = 0;
-        camRight.Normalize();
-
-        Vector3 move = (camForward * z + camRight * x).normalized;
-        controller.Move(move * speed * Time.deltaTime);
-
-        float cameraYaw = pov.m_HorizontalAxis.Value;
-        Quaternion targerRot = Quaternion.Euler(0f, cameraYaw, 0f);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targerRot, rotationSpeed * Time.deltaTime);
-
-        if(isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            velocity.y = jumpPower;
-        }
+        float h = Input.GetAxis("Horizontal");
+        float v = Input.GetAxis("Vertical");
+        Vector3 move = transform.right * h + transform.forward * v;
+        controller.Move(move * moveSpeed * Time.deltaTime);
+        if (Input.GetButtonDown("Jump") && isGrounded)
+            velocity.y = Mathf.Sqrt(jumpPower * -2f * gravity);
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
-
-        
     }
-    public void TakeDamage(int damage)
+    void HandleLook()
     {
-        currentHP -= damage;
-        hpSlider.value = (float)currentHP / maxHP;
-
-        if(currentHP <= 0)
-        {
-            Die();
-        }
-    }
-    void Die()
-    {
-        Destroy(gameObject);
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        transform.Rotate(Vector3.up * mouseX);
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+        if (cam != null)
+            cam.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 }
