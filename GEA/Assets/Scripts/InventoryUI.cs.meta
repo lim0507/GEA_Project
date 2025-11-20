@@ -3,7 +3,11 @@ guid: b4a2ecbd7ed6c3c43b97b6e7bac8000f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - dirtSprite: {fileID: 21300000, guid: 9b03626f79d633948bdba4132cfe3524, type: 3}
+  - grassSprite: {fileID: 21300000, guid: 3b989b932bda48143991a934fc0c9ed0, type: 3}
+  - waterSprite: {fileID: 21300000, guid: 2fade11512d2ccd448acd5239a6c637e, type: 3}
+  - SlotItem: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
