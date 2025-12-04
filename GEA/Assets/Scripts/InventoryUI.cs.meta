@@ -7,6 +7,7 @@ MonoImporter:
   - dirtSprite: {fileID: 21300000, guid: 9b03626f79d633948bdba4132cfe3524, type: 3}
   - grassSprite: {fileID: 21300000, guid: 3b989b932bda48143991a934fc0c9ed0, type: 3}
   - waterSprite: {fileID: 21300000, guid: 2fade11512d2ccd448acd5239a6c637e, type: 3}
+  - AxeSprite: {fileID: 21300000, guid: c997489579385ee4eb315f8b7f9a5469, type: 3}
   - SlotItem: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
